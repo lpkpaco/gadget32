@@ -4,3 +4,4 @@
 *.png
 /frame.bin
 /ImageData.cpp
+/ImageData.h
