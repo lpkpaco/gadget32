@@ -5,7 +5,9 @@ def clashes(start, end, cal):
             return name
     return None
 
-def add_event(cal, name, start, end):
+def add_event(cal, name, start, end, isEmpty):
+    if isEmpty:
+        cal.update({name: [start, end]})
     if end <= start:
         return False, "end must be after start"
     hit = clashes(start, end, cal)
@@ -20,7 +22,19 @@ def add_event(cal, name, start, end):
 def draw_calendar(cal_dict):
     cal = Image.new('RGB', (240, 240), color='white')
     d = ImageDraw.Draw(cal)
-    if len(cal_dict) <= 3:
+    if len(cal_dict) == 1:
+            for i in range(0, len(cal_dict)):
+                key = list(cal_dict.keys())[i]
+                value = list(cal_dict.values())[i]
+                rect_start_y = 5
+                rect_end_y = 85
+                event_start_y = rect_start_y + 10
+                time_start_y = event_start_y + 15
+                d.rectangle([10, rect_start_y, 230, rect_end_y], outline=(0, 214, 255, 153), width=2, fill=(0, 214, 255, 94))
+                d.text([20, event_start_y], key, fill=(0, 0, 0), align="left", font=ImageFont.truetype("arial.ttf", 12))
+                d.text([20, time_start_y], str(value[0]) + " - " + str(value[1]), fill=(0, 0, 0), align="left", font=ImageFont.truetype("arial.ttf", 12))
+            i += 1
+    elif 1 <len(cal_dict) <= 3:
         for i in range(0, len(cal_dict)):
             key = list(cal_dict.keys())[i]
             value = list(cal_dict.values())[i]
@@ -45,6 +59,7 @@ def draw_calendar(cal_dict):
             d.text([20, time_start_y], str(value[0]) + " - " + str(value[1]), fill=(0, 0, 0), align="left", font=ImageFont.truetype("arial.ttf", 15-len(cal_dict)))
             i += 1
     cal.save("calendar.png")
+    return cal
 
 if __name__ == "__main__":
     cal_dict = {"CCST9042": ["1300", "1500"], "CCCH9023": ["1500", "1700"], "CCST9017": ["1700", "1900"], "CCST9018": ["1900", "2100"], "CCST9019": ["2100", "2300"]}
