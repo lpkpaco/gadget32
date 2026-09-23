@@ -1,16 +1,21 @@
 import gradio as gr
 from request import upload, clear
-from convert_epd import writebin, writecpph
+from convert_epd import writebin, writecpph, calendar_convert
 from gen_cal import add_event, draw_calendar
 import shutil
 from PIL import Image
+cal_dict = {}
+
+def cal_upload():
+    calendar_convert()
+    upload()
+    return "Calendar drawn and uploaded to display"
 
 def convert_both():
     writebin()
     writecpph()
     return "Converted to C++ array and binary file"
 
-cal_dict = {}
 def save_image(path):
     shutil.copy(path, "photo.jpg")
     return "Saved as photo.jpg"
@@ -25,7 +30,7 @@ def draw_calendar_gui():
 def clear_calendar_gui():
     cal_dict.clear()
     return "Calendar cleared"
-    
+
 with gr.Blocks() as webui:
     with gr.Row():
         with gr.Column():
@@ -39,23 +44,23 @@ with gr.Blocks() as webui:
             draw_upload_button = gr.Button("Draw and Upload Calendar to Display")
         with gr.Column():
             image_output = gr.Image(label="Calendar Generated", type="pil")
-        add_button.click(
+            add_button.click(
             fn = add_event_gui,
             inputs = [event, time1, time2],
             outputs = [gr.Textbox(label="Status")],
         )
-        generate_button.click(
+            generate_button.click(
             fn = draw_calendar_gui,
             inputs = [],
             outputs = [image_output],
         )
-        clear_button.click(
+            clear_button.click(
             fn = clear_calendar_gui,
             inputs = None,
             outputs = [gr.Textbox(label="Status")],
         )
-        draw_upload_button.click(
-            fn = lambda: [draw_calendar(cal_dict).save("frame.bin"), upload()],
+            draw_upload_button.click(
+            fn = cal_upload,
             inputs = None,
             outputs = [gr.Textbox(label="Upload Status")],
         )
@@ -66,6 +71,7 @@ with gr.Blocks() as webui:
             save_button = gr.Button("Upload Image")
             convert_button = gr.Button("Convert to C++ array + binary")
             upload_button = gr.Button("Upload to Display")
+            clear_button = gr.Button("Clear Display")
             convert_button.click(
                 fn = convert_both,
                 inputs = [],
@@ -80,5 +86,10 @@ with gr.Blocks() as webui:
                 fn = upload,
                 inputs = None,
                 outputs = [gr.Textbox(label="Upload Status")],
+            )
+            clear_button.click(
+                fn = clear,
+                inputs = None,
+                outputs = [gr.Textbox(label="Clear Status")],
             )
 webui.launch()

@@ -31,7 +31,11 @@ def pack(img):
         b = pix[i + 1] & 0x0F
         buf.append((a << 4) | b)
     return buf
-
+def calendar_convert():
+    buf = pack(Image.open("calendar.png"))
+    print("bytes:", len(buf), "(must be 28800)")
+    open("frame.bin", "wb").write(buf)
+    print("Wrote to frame.bin")
 def writecpph():
     src = sys.argv[1] if len(sys.argv) > 1 else "photo.jpg"
     buf = pack(Image.open(src))
