@@ -32,12 +32,24 @@ def draw_calendar(cal_dict):
             d.text([20, event_start_y], key, fill=(0, 0, 0), align="left", font=ImageFont.truetype("arial.ttf", 12))
             d.text([20, time_start_y], str(value[0]) + " - " + str(value[1]), fill=(0, 0, 0), align="left", font=ImageFont.truetype("arial.ttf", 12))
             i += 1
+    else:
+        for i in range(0, len(cal_dict)):
+            key = list(cal_dict.keys())[i]
+            value = list(cal_dict.values())[i]
+            rect_start_y = (i)*(240/len(cal_dict)) + 3
+            rect_end_y = (i+1)*(240/len(cal_dict)) - 3
+            event_start_y = rect_start_y + 5
+            time_start_y = event_start_y + 10
+            d.rectangle([10, rect_start_y, 230, rect_end_y], outline=(0, 214, 255, 153), width=2, fill=(0, 214, 255, 94))
+            d.text([20, event_start_y], key, fill=(0, 0, 0), align="left", font=ImageFont.truetype("arial.ttf", 15-len(cal_dict)))
+            d.text([20, time_start_y], str(value[0]) + " - " + str(value[1]), fill=(0, 0, 0), align="left", font=ImageFont.truetype("arial.ttf", 15-len(cal_dict)))
+            i += 1
     cal.save("calendar.png")
 
 if __name__ == "__main__":
-    cal_dict = {"CCST9042": [1300, 1500], "CCCH9023": [1500, 1700]}
+    cal_dict = {"CCST9042": ["1300", "1500"], "CCCH9023": ["1500", "1700"], "CCST9017": ["1700", "1900"], "CCST9018": ["1900", "2100"], "CCST9019": ["2100", "2300"]}
     event = input()
-    time1 = int(input())
-    time2 = int(input())
+    time1 = input()
+    time2 = input()
     print(add_event(cal_dict, event, time1, time2))
     draw_calendar(cal_dict)
