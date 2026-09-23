@@ -5,8 +5,10 @@
 /frame.bin
 /esp32_s3/
 /ESP32-S3/
-ImageData.cpp
+/ImageData.cpp
+/ImageData.h
 ImageData.h
+ImageData.cpp
 EPD_1in54e.cpp
 EPD_1in54e.h
 font8.cpp
