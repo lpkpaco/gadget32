@@ -57,6 +57,7 @@ def writebin():
     buf = pack(Image.open(src))
     print("bytes:", len(buf), "(must be 28800)")
     open("frame.bin", "wb").write(buf)
+    print("Wrote to frame.bin")
 
 if __name__ == "__main__":
     writecpph()
