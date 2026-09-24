@@ -1,10 +1,12 @@
 # gadget32
-Source codes for ESP32-S3 powered Wi-Fi image rendering and decoding for the WaveShare 1.54" 240 x 240 E6 color space e-paper display. Beside computer-reliant Python-based controlling and image drawing, a C++ image decoding script is developed for ESP32 to decode image data into C-Style array and properly display image on the e-paper display. 
+<hr>
+Source codes and design files for ESP32-S3 powered image rendering and dithering for the WaveShare 1.54" 240 x 240 E6 color space e-paper display on a gadget. Beside computer-reliant Python-based controlling and image drawing, a C++ decoding with PSRAM allocating script is developed for ESP32 to decode image data into C-Style array and properly display image on the e-paper display. 
 
 This project also includes a small Python/Gradio utility for preparing images and rendering a simple calendar.
 
-## Description
 
+## Description
+### Software
 The firmware targets the Waveshare 1.54-inch e-Paper E display, using the panel's six supported colors:
 - black
 - white
@@ -17,22 +19,43 @@ Images are fitted into a 240 x 240 canvas, converted to the six-color palette, a
 
 There are two pipelines to send an image:
 
-- **Decode via Python:** using Gradio frontend GUI with Python backend to convert an image or calendar to `frame.bin`, then upload the already-packed frame to the display to save computation power on the ESP32 and bypass certain ESP32 memory limits **(especially issues related to PSRAM)**.
+- **Decode via Python:** using Gradio frontend GUI with Python backend to convert an image or calendar to `frame.bin`, then upload the already-packed frame to the display to save computation power on the ESP32 and bypass certain ESP32 memory limits **(especially issues related to PSRAM due to allocation issues)**.
 
 - **Decode via C++:** using ESP32 as an AP to host a control panel and send a JPEG directly through JavaScript and HTTP requests. The ESP32 performs JPEG decoding, resizing, palette conversion, and dithering.
 
 | | Decode via Python on PC | Decode via C++ on ESP32 (Recommended) |
 | --- | --- | --- |
 | Compatibility | Requires PC (or any device) that can run Python natively to upload images. | Cross-platform capability. Allow uploading image from any devices including phones and PC as long as there is browser and JavaScript access. |
-| GUI support | Yes. Based on Gradio. | Yes. In the form of webpage hosted on ESP32. Not as good-looking as the one running on Gradio but still in active development. |
+| GUI support | Yes. Based on Gradio. | Yes. In the form of webpage hosted on ESP32. |
 
-## Hardware
+<br>
+<hr>
 
-- ESP32-S3 with PSRAM
+### Hardware
+
+- ESP32-S3-DevModule with PSRAM, or
+- Embeded **`ESP32-S3-WROOM-1-N16R8`** on a custom PCB (this repository)
 - Waveshare 1.54-inch e-Paper E display, 240 x 240
 
 The default SPI and control pins are defined with reference to the [official guide](https://docs.waveshare.com/1.54inch_e-Paper_E).
 The display is configured for the 9-pin interface. Verify the pinout and voltage requirements of your particular display before powering the circuit.
+
+#### Schematic
+<img src="/assets/readme/SCH_gadget32-v1_0.svg">
+The PDF version can be found in the code section.
+
+#### BOM
+
+| Package <br> Component Type | 0603 | 1206 | Other|
+| --- | --- | --- | --- |
+| Capacitor | 22 pF <br> 100 nF <br> 1 uF <br> 10 uF | None | None |
+| Resistor | 0 Ohm <br> 10k Ohm | 5.1k Ohm | None |
+| Diode | None | None | 1N5819 <br> LESD5D5.0CT1G-MS |
+| Other | None | None | ESP32-S3-WROOM-1-N16R8 <br> TS-1187A-B-A-B <br> GT-USB-7010ASV <br> AMS1117-3.3V <br> 9-pin 2.54 mm connector|
+
+#### PCB
+The PCB is designed using EasyEDA Pro. This design is not the most optimized one but functional. It may subject to change in the future. \
+The D+ and D- nets are differential pairs.
 
 ## Get started
 
@@ -94,52 +117,32 @@ The converter writes:
 
 The Python uploader expects the computer to be connected to the `epaper` access point and posts `frame.bin` to `http://192.168.4.1/upload`.
 
-### Generate a calendar
-
-Use the **Calendar Generator** section to add non-overlapping events in 24-hour `HHMM` format. Generate the preview, then select **Draw and Upload Calendar to Display**. The result is saved as `calendar.png`, converted to `frame.bin`, and sent to the display.
-
-The calendar renderer currently supports up to five events comfortably; longer event names or larger event lists may need font and layout adjustments in [`gen_cal.py`](gen_cal.py).
-
-## Repository layout
-
-| Path | Purpose |
-| --- | --- |
-| [`convert_epd.py`](convert_epd.py) | Resizes, quantizes, dithers, and packs images. |
-| [`gen_cal.py`](gen_cal.py) | Validates events and renders the calendar image. |
-| [`gui.py`](gui.py) | Gradio interface for image and calendar workflows. |
-| [`request.py`](request.py) | HTTP upload and clear helpers. |
-| [`s3_cpp_decode.ino`](s3_cpp_decode.ino) | Browser uploader with on-device JPEG decoding. |
-| [`s3_py_decode.ino`](s3_py_decode.ino) | Standalone browser/JPEG decoding sketch. |
-| [`ESP32-S3/s3_host`](ESP32-S3/s3_host) | Display driver, fonts, configuration, and host sketch. |
-| [`page.h`](page.h) | Embedded browser upload page. |
 
 ## Known limitations
 
-- The Wi-Fi credentials and device address are currently hard-coded in the firmware and Python helper.
-- The browser firmware accepts JPEG input; the Python converter accepts images supported by Pillow.
-- The panel has only six colors, so photographic images will show visible palette reduction and dithering.
 - The ESP32 must have PSRAM available for the browser/JPEG decoding sketches.
-- The Python and Arduino workflows are alternatives. Use the frame-upload firmware with `gui.py`; use the browser firmware with the built-in web page.
 
 ## Future work
 
-- Move Wi-Fi credentials and the device address into configuration instead of hard-coding them.
-- Add configurable display dimensions and palette settings.
-- Improve calendar text wrapping and support for more events.
-- Add a cleaner status response and upload error reporting to the Python client.
-- Document tested ESP32-S3 board and display revisions.
+- [ ] Add configurable display dimensions and palette settings to support different models of display.
+- [ ] Improve dithering and decoding algorithm.
+- [ ] Improve calendar text wrapping and support for more events.
+- [ ] Document tested ESP32-S3 board and display revisions.
+
+## FAQ
+
+Submit an issue ticket if there is a problem.
 
 ## Credits
 
 This project uses or is based on the following work:
 
-- [Waveshare e-Paper examples and driver code](https://www.waveshare.com/wiki/1.54inch_e-Paper_Module_(E))
-- [JPEGDEC](https://github.com/bitbank2/JPEGDEC) for on-device JPEG decoding
-- [Pillow](https://python-pillow.org/) for image processing
-- [Gradio](https://www.gradio.app/) for the local Python interface
+- [Waveshare driver code](https://www.waveshare.com/wiki/1.54inch_e-Paper_Module_(E))
+- [JPEGDEC](https://github.com/bitbank2/JPEGDEC)
 
 ## License
 
+Some codes in the full release packages have been licensed by Waveshare. Check the specific files for more information.
 This repository is licensed under the [Apache License 2.0](LICENSE).
 
 ## Disclaimer
