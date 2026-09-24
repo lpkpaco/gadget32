@@ -66,5 +66,5 @@ if __name__ == "__main__":
     event = input()
     time1 = input()
     time2 = input()
-    print(add_event(cal_dict, event, time1, time2))
+    print(add_event(cal_dict, event, time1, time2, isEmpty = False))
     draw_calendar(cal_dict)
