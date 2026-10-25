@@ -31,7 +31,6 @@ void clear() {
 
 void upload() {
   HTTPUpload& upload = server.upload();
-  static size_t n =0;
   if (upload.status == UPLOAD_FILE_START) {
     jpg_n = 0;
     Serial.println("START");
