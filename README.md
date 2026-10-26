@@ -58,6 +58,8 @@ The PCB is designed using EasyEDA Pro. This design is not the most optimized one
 The D+ and D- nets are differential pairs.
 
 ## Get started
+### Download the package(s) from the [Release Page](https://github.com/lpkpaco/gadget32/releases) and mainly refer to the instructions on the release note(s).
+### The following guide is for supplementary use only.
 
 ### 1. Build and upload firmware
 
