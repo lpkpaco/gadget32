@@ -3,7 +3,7 @@
 *.webp
 *.png
 /frame.bin
-/esp32_s3/
+/releases/
 /ESP32-S3/
 /ImageData.cpp
 /ImageData.h
