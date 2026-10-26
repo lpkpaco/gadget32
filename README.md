@@ -1,12 +1,13 @@
 # gadget32
 <hr>
-Source code and hardware design for an ESP32-S3 powered image rendering pipeline built for the Waveshare 1.54" 240 x 240 E6 color e-paper display. This project combines embedded firmware, Python-based image processing, browser-driven upload workflows, and low-level decoding optimizations into a cohesive, production-style system for high-quality digital display output.
+Source codes and design files for ESP32-S3 powered image rendering and dithering for the WaveShare 1.54" 240 x 240 E6 color space e-paper display on a gadget. Beside computer-reliant Python-based controlling and image drawing, a C++ decoding with PSRAM allocating script is developed for ESP32 to decode image data into C-Style array and properly display image on the e-paper display. 
 
-The repository includes a custom C++/ESP32 decoding path with PSRAM-aware memory handling, a Python/Gradio image preparation toolchain, and a complete hardware-ready workflow for rendering content from source images and calendars onto the display with polished visual fidelity.
+This project also includes a small Python/Gradio utility for preparing images and rendering a simple calendar.
+
 
 ## Description
 ### Software
-This repository delivers a full-stack display engineering workflow for the Waveshare 1.54-inch e-Paper E panel, combining efficient embedded compute with a flexible image preparation pipeline across the six supported colors:
+The firmware targets the Waveshare 1.54-inch e-Paper E display, using the panel's six supported colors:
 - black
 - white
 - yellow
@@ -57,6 +58,8 @@ The PCB is designed using EasyEDA Pro. This design is not the most optimized one
 The D+ and D- nets are differential pairs.
 
 ## Get started
+### Download the package(s) from the [Release Page](https://github.com/lpkpaco/gadget32/releases) and mainly refer to the instructions on the release note(s).
+### The following guide is for supplementary use only.
 
 ### 1. Build and upload firmware
 
